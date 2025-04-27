@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Menssagem {
+public class Mensagem {
 
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +24,14 @@ private LocalDateTime datahora;
 @ManyToOne
 private Usuario usuario;
 
-public Menssagem(String texto, LocalDateTime datahora) {
+public Mensagem(String texto, LocalDateTime datahora) {
 
     this.texto = texto;
     this.datahora = LocalDateTime.now();
 
+}
+public Mensagem(){
+    
 }
 
 public long getId() {

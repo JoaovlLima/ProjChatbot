@@ -5,9 +5,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.model.Menssagem;
+import com.example.api.model.Mensagem;
 import com.example.api.service.MensagemService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -20,10 +23,14 @@ public class MensagemController {
         this.mensagemService = mensagemService;
     }
     @PostMapping
-    public Menssagem salvarMenssagem(@RequestBody Menssagem menssagem) {
+    public Mensagem salvarMenssagem(@RequestBody Mensagem menssagem) {
         
         return mensagemService.salvar(menssagem);
     }
+   @GetMapping
+   public Iterable<Mensagem> listarMenssagem() {
+       return mensagemService.listarTodos();
+   }
    
     
 }

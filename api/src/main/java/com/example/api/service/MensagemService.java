@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
-import com.example.api.model.Menssagem;
+import com.example.api.model.Mensagem;
 import com.example.api.repository.MenssagemRepository;
 import java.util.List;
 
@@ -17,11 +17,12 @@ public class MensagemService {
         this.menssagemRepository = menssagemRepository;
     }
   
-   public Menssagem salvar(Menssagem menssagem){
+   public Mensagem salvar(Mensagem menssagem){
     return menssagemRepository.save(menssagem);
 
    }
-   public List<Menssagem> listarTodos(){
+   public List<Mensagem> listarTodos(){
     return menssagemRepository.findAll();
-   }    
+   } 
+   
 }

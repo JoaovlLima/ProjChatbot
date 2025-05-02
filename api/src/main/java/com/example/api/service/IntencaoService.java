@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 import io.pinecone.clients.Index;
 import io.pinecone.clients.Pinecone;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 
 
 @Service
@@ -26,10 +30,25 @@ public class IntencaoService {
   }
   
   public void salvarIntencao(String texto){
-    List<Float> embeddings = embeddingService.gerarEmbeddings(texto);
+    String textoLimpo = texto;
+
+ // Try catch para transformar o json em texto
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode node = mapper.readTree(texto);
+
+      if (node.has("texto")){
+        textoLimpo = node.get("texto").asText();
+      }
+    } catch (Exception e) {
+      
+    }
+  // Mando para o EmbeddingService para transformar o texto em vetores
+    List<Float> embeddings = embeddingService.gerarEmbeddings(textoLimpo);
     
+    //Formato metadata para alocar no banco vetorial
     Struct metadata = Struct.newBuilder()
-    .putFields("texto", Value.newBuilder().setStringValue(texto).build())
+    .putFields("texto", Value.newBuilder().setStringValue(textoLimpo).build())
     .build();
 
     intencaoIndex.upsert(UUID.randomUUID().toString(), embeddings,null,null, metadata,"default");

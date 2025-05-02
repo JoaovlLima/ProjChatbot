@@ -22,15 +22,14 @@ public class MensagemController {
     public MensagemController(MensagemService mensagemService){
         this.mensagemService = mensagemService;
     }
-    @PostMapping
-    public Mensagem salvarMenssagem(@RequestBody Mensagem menssagem) {
-        
-        return mensagemService.salvar(menssagem);
-    }
-   @GetMapping
-   public Iterable<Mensagem> listarMenssagem() {
-       return mensagemService.listarTodos();
+   @PostMapping()
+
+   public String buscarIntencao(@RequestBody String mensagem) {
+       
+       return mensagemService.buscarIntencao(mensagem);
+       
    }
+   
    
     
 }

@@ -1,28 +1,46 @@
 package com.example.api.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
 import com.example.api.model.Mensagem;
 import com.example.api.repository.MenssagemRepository;
+
+import io.pinecone.clients.Index;
+
 import java.util.List;
 
 @Service
 public class MensagemService {
+private final Index intencaoIndex;
+private final EmbeddingService embeddingService;
 
-    private final MenssagemRepository menssagemRepository;
+public MensagemService(@Qualifier("intencaoIndex") Index intencaoIndex, EmbeddingService embeddingService ){
+    this.intencaoIndex = intencaoIndex;
+    this.embeddingService = embeddingService;
+}
 
-    public MensagemService(MenssagemRepository menssagemRepository) {
-        this.menssagemRepository = menssagemRepository;
+public String buscarIntencao(String mensagem){
+    List<Float> embeddingsConsulta = embeddingService.gerarEmbeddings(mensagem);
+    
+    var intencao = intencaoIndex.query(2, embeddingsConsulta,null,null,null,"default",null,false,true);
+    
+    if(!intencao.getMatchesList().isEmpty()){
+        
+        var match = intencao.getMatches(0);
+        var metadata = match.getMetadata();
+
+        if (metadata.containsFields("texto")){
+            String textoIntencao = metadata.getFieldsOrThrow("texto").getStringValue();
+            float score = match.getScore();
+            return "Texto: "+textoIntencao+"| Score: "+score;
+                }
     }
-  
-   public Mensagem salvar(Mensagem menssagem){
-    return menssagemRepository.save(menssagem);
+    return "Nenhum resultado encontrado";
+}
 
-   }
-   public List<Mensagem> listarTodos(){
-    return menssagemRepository.findAll();
-   } 
-   
+
+    
 }

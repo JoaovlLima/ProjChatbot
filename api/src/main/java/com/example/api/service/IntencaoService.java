@@ -1,26 +1,38 @@
 package com.example.api.service;
 
+import com.google.protobuf.Struct;
+import com.google.protobuf.Value;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.expression.spel.ast.QualifiedIdentifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.api.model.Intencao;
-import com.example.api.repository.IntencaoRepository;
+import io.pinecone.clients.Index;
+import io.pinecone.clients.Pinecone;
+
+
 
 @Service
 public class IntencaoService {
-    private final IntencaoRepository intencaoRepository;
+  private final Index intencaoIndex;
+  private final EmbeddingService embeddingService;
 
-    public IntencaoService(IntencaoRepository intencaoRepository) {
-        this.intencaoRepository = intencaoRepository;
-    }
+  public IntencaoService(@Qualifier("intencaoIndex") Index intencaoIndex, EmbeddingService embeddingService) {
+    this.intencaoIndex = intencaoIndex;
+    this.embeddingService = embeddingService;
+  }
+  
+  public void salvarIntencao(String texto){
+    List<Float> embeddings = embeddingService.gerarEmbeddings(texto);
     
-    
-    public Intencao salvar(Intencao intencao){
-        return intencaoRepository.save(intencao);
-    }
-    public List<Intencao> listarTodos(){
-        return  intencaoRepository.findAll();
-    }
+    Struct metadata = Struct.newBuilder()
+    .putFields("texto", Value.newBuilder().setStringValue(texto).build())
+    .build();
+
+    intencaoIndex.upsert(UUID.randomUUID().toString(), embeddings,null,null, metadata,"default");
+
+  }
 }

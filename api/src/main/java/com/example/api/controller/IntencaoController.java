@@ -3,7 +3,6 @@ package com.example.api.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.api.config.PineconeConfig;
-import com.example.api.model.Intencao;
 import com.example.api.service.IntencaoService;
 import com.google.common.net.MediaType;
 

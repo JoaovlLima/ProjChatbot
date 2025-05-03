@@ -4,10 +4,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-import com.example.api.model.Mensagem;
-import com.example.api.repository.MenssagemRepository;
-
 import io.pinecone.clients.Index;
 
 import java.util.List;
@@ -35,7 +31,7 @@ public String buscarIntencao(String mensagem){
         if (metadata.containsFields("texto")){
             String textoIntencao = metadata.getFieldsOrThrow("texto").getStringValue();
             float score = match.getScore();
-            return "Texto: "+textoIntencao+"| Score: "+score;
+            return textoIntencao;
                 }
     }
     return "Nenhum resultado encontrado";

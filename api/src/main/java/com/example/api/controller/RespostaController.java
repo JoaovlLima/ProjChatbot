@@ -3,7 +3,6 @@ package com.example.api.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.model.Resposta;
 import com.example.api.service.RespostaService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,16 +20,8 @@ public class RespostaController {
         this.respostaService = respostaService;
     }
 
-    @PostMapping()
-    public Resposta salvarResposta(@RequestBody Resposta resposta) {
-        
-        return respostaService.salvar(resposta);
-    }
-
-    @GetMapping()
-    public Iterable<Resposta> listarResposta() {
-        return respostaService.listarTodos();
-    }
+   
+    
     
     
 }

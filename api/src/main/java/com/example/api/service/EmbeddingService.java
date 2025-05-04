@@ -2,43 +2,43 @@ package com.example.api.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.openapitools.inference.client.model.EmbeddingsList;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.api.config.OpenAIConfig;
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.embeddings.CreateEmbeddingResponse;
+import com.openai.models.embeddings.EmbeddingCreateParams;
 
 @Service
 public class EmbeddingService {
-    private final WebClient webClient;
-    private final OpenAIConfig openAIConfig;
+    private OpenAIClient client;
+    
 
     public EmbeddingService(OpenAIConfig openAIConfig){
-        this.openAIConfig = openAIConfig;
-        this.webClient = WebClient.builder()
-                     .baseUrl(openAIConfig.getOpenAiUrl())
-                     .defaultHeader("Authorization", "Bearer "+openAIConfig.getOpenAiKey())
-                     .build();
+        this.client = OpenAIOkHttpClient.builder()
+               .apiKey(openAIConfig.getOpenAiKey())
+               .build();
     }
 
     public List<Float> gerarEmbeddings(String texto){
-        Map<String, Object> body = Map.of("model", "text-embedding-3-small",
-                                            "input",texto
-        );
+        EmbeddingCreateParams params = EmbeddingCreateParams.builder()
+              .model("text-embedding-3-small")
+              .input(texto)
+              .build();
 
-        Map<String, Object> response = webClient.post()
-                       .contentType(MediaType.APPLICATION_JSON)
-                       .bodyValue(body)
-                       .retrieve()
-                       .bodyToMono(Map.class)
-                       .block();
 
-        List<Double> embeddingsList = (List<Double>)
-            ((Map<String, Object>) ((List<Object>) response.get("data")).get(0)).get("embedding");
+        CreateEmbeddingResponse response = client.embeddings().create(params);
 
-        return embeddingsList.stream().map(Double::floatValue).toList();
-        
+        List<Double> doubleList = response.data().get(0).embedding();
+
+        return doubleList.stream().map(Double::floatValue).collect(Collectors.toList());
+
     }
 
 

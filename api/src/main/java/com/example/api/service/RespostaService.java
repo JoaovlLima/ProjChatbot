@@ -2,11 +2,14 @@ package com.example.api.service;
 
 import java.sql.JDBCType;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.autoconfigure.batch.BatchProperties.Jdbc;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class RespostaService {
@@ -17,15 +20,20 @@ public class RespostaService {
     this.jdbcTemplate = jdbcTemplate;
    }
 
-   public String buscarResposta(String intencao){
-    if ("Lucro Hoje".equals(intencao)){
-        String sql = "Select valor from lucros where id_lucro = 1";
-        return jdbcTemplate.queryForObject(sql,new Object[]{},String.class);
-    }
-    else{
-        String sql = "Select count(*) from vendas";
-        return jdbcTemplate.queryForObject(sql,new Object[]{},String.class);
-    }
+   public String buscarResposta(String sqlGerado){
+    
+    System.out.println("Executando SQL: " + sqlGerado);
+
+   try {
+      List<Map<String,Object>> resultados = jdbcTemplate.queryForList(sqlGerado);
+      ObjectMapper mapper = new ObjectMapper();
+      String resultado = mapper.writeValueAsString(resultados);
+      return (resultado != null) ? resultado.toString() : "Nenhum resultado encontrado.";
+
+  } catch (Exception e) {
+      e.printStackTrace();
+      return "Erro ao consultar o SQL: " + e.getClass().getSimpleName() + " - " + e.getMessage();
+  }
    }
 
    

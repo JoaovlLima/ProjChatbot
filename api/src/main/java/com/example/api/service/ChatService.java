@@ -29,7 +29,7 @@
                         + "Contexto: Intenção: "+ intencao+". Reposta: "+respostaSql;
             ChatCompletionCreateParams params = ChatCompletionCreateParams.builder()
                         .model(ChatModel.GPT_4_1_MINI)
-                        .addSystemMessage("Você é um assistente educado, direto ao ponto e brincalhão. Foque apenas na resposta sem dar sugestões.")
+                        .addSystemMessage("Você é um assistente educado, direto ao ponto e brincalhão. Foque apenas na resposta sem dar sugestões.- Dicas que deva seguir : Retorne datas no formato YYYY-MM-DD ")
                         .addUserMessage(prompt)
                         .temperature(0.7)
                         .build();

@@ -31,7 +31,7 @@ public String buscarIntencao(String mensagem){
         if (metadata.containsFields("texto")){
             String textoIntencao = metadata.getFieldsOrThrow("texto").getStringValue();
             float score = match.getScore();
-            return textoIntencao;
+            return textoIntencao +"score:"+score;
                 }
     }
     return "Nenhum resultado encontrado";

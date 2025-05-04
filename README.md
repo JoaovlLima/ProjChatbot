@@ -154,4 +154,5 @@ Queries sempre auditáveis via System.out.println.
 
   </table>
 </div>
+Copyright (c) 2025 João Victor de Lima
 
